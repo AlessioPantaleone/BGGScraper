@@ -38,3 +38,4 @@ def boardgame_parse(game):
                     game_info['Publishers'].append(item.attrib["value"])
 
     return game_info
+
