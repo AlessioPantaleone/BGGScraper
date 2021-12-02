@@ -1,58 +1,40 @@
 from lxml import etree
-
-"""
-
-parsed = etree.fromstring(coll)
-
-for i in parsed:
-    print i.items()
-
-ids = [x.items()[1][1] for x in parsed]
-
-[rating.attrib for rating in parsed.iter('rating')]
-
-# try parsed.get('rating')?
-"""
+import pprint
 
 
 def boardgame_parse(game):
-
-    print(game)
     tree_root = etree.XML(game)
-    game_info = {}
 
-    for attribute in tree_root:
-        match (str(attribute.tag)):
-            case "item":
-                game_info['ID'] = attribute.attrib["id"]
-                break
-            case _:
-                print(f"{attribute.tag} not interesting")
-                break
+    game_info = {"id": tree_root[0].get("id"), "Mechanics": [], "Designers": [], "Artists": [], "Publishers": []}
 
-        # match attribute["type"]
-        # TODO Voto ID
-        # TODO Voto Name
-        # TODO Anno di pubblicazione
-        # TODO Voto online
-        # TODO Min giocatori
-        # TODO Max giocatori
-        # TODO Reccommended age
-        # TODO Theme
-        # TODO Mechanics
-        # TODO Designers
-        # TODO Artists
-        # TODO Publishers
+    for item in tree_root[0]:
+        match (str(item.tag)):
+            case "name":
+                if item.attrib["type"] == "primary":
+                    game_info['Name'] = item.attrib["value"]
+            case "image":
+                game_info['Image_Link'] = item  # TODO Retrieve image
+            case "yearpublished":
+                game_info['PublicationYear'] = item.attrib["value"]
+            case "statistics":
+                game_info['BGG_Score'] = round(float(item[0][1].get("value")), 1)
+                currentmax = 0
+                for element in item.iter("rank"):
+                    if int(element.attrib["value"]) > currentmax and element.attrib["type"] == "family":
+                        currentmax = int(element.attrib["value"])
+                        game_info['Category'] = element.attrib["name"]
+            case "minplayers":
+                game_info['MinPlayers'] = item.attrib["value"]
+            case "maxplayers":
+                game_info['MaxPlayers'] = item.attrib["value"]
+            case "link":
+                if item.attrib["type"] == "boardgamemechanic":
+                    game_info['Mechanics'].append(item.attrib["value"])
+                if item.attrib["type"] == "boardgamedesigner":
+                    game_info['Designers'].append(item.attrib["value"])
+                if item.attrib["type"] == "boardgameartist":
+                    game_info['Artists'].append(item.attrib["value"])
+                if item.attrib["type"] == "boardgamepublisher":
+                    game_info['Publishers'].append(item.attrib["value"])
 
-    print(game_info)
-
-
-"""
-    for item in tree_root.iter('item'):
-        if item.attrib["type"] == "boardgame":
-            game_info['ID'] = item.attrib["id"]
-
-    for name in tree_root.iter('name'):
-        if name.attrib["type"] == "primary":
-            game_info['Name'] = name.attrib["value"]
-"""
+    return game_info

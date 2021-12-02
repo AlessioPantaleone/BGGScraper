@@ -15,7 +15,7 @@ Logger = LoggerHelper.get_complete_logger("ScraperLog")
 Logger.info("Logging started")
 
 # idToQuery = TODO
-idToQuery = [45]
+idToQuery = [277903, 161417, 68448]
 gameData = []
 for identifier in idToQuery:
     boardgameurl = 'http://www.boardgamegeek.com/xmlapi2/thing?type=boardgame&stats=1&id=' + str(identifier)
@@ -33,6 +33,13 @@ for identifier in idToQuery:
             i += 1
             continue
 
-time.sleep(0.5)
+time.sleep(0.001)
+try:
+    for game in gameData:
+        parsedDictionary = XMLParser.boardgame_parse(game)
+        for key, value in parsedDictionary.items():
+            print(key, ' : ', value)
+        Logger.info(f"Game parsed successfully")
+except:
+    Logger.critical(f"Critical Failure for parsing game")
 
-XMLParser.boardgame_parse((gameData[0]))
