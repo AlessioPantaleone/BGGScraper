@@ -17,6 +17,7 @@ Logger = LoggerHelper.get_complete_logger("ScraperLog")
 Logger.info("Logging started")
 
 idToQuery = FileHelper.get_input_from_file("Input.txt")
+#idToQuery = [92539]
 gamesData = []
 skippedIDs = []
 
@@ -33,9 +34,11 @@ for identifier in idToQuery:
                 gamesData.append(parsedDictionary)
                 Logger.info(f"Game {identifier} parsed successfully")
                 break
-            except:
-                Logger.critical(f"Critical Failure for parsing game {identifier}")
+            except Exception as e:
+                Logger.critical(f"Critical Failure for parsing game {identifier}, trying again as an expansion")
+                boardgameurl = 'http://www.boardgamegeek.com/xmlapi2/thing?type=boardgameexpansion&stats=1&id=' + str(identifier)
                 if i == 4:
+                    print(e.with_traceback())
                     skippedIDs.append(identifier)
         else:
             Logger.error(f"Failed to retrieve game with id: {identifier}")

@@ -1,3 +1,5 @@
+import logging
+
 from lxml import etree
 import pprint
 
@@ -18,11 +20,14 @@ def boardgame_parse(game):
                 game_info['PublicationYear'] = item.attrib["value"]
             case "statistics":
                 game_info['BGG_Score'] = round(float(item[0][1].get("value")), 1)
-                currentmax = 0
-                for element in item.iter("rank"):
-                    if int(element.attrib["value"]) > currentmax and element.attrib["type"] == "family":
-                        currentmax = int(element.attrib["value"])
-                        game_info['Category'] = element.attrib["name"]
+                try:
+                    currentmax = 0
+                    for element in item.iter("rank"):
+                        if int(element.attrib["value"]) > currentmax and element.attrib["type"] == "family":
+                            currentmax = int(element.attrib["value"])
+                            game_info['Category'] = element.attrib["name"]
+                except:
+                    logging.debug(f"missing current category max value far {game_info['Name']}")
             case "minplayers":
                 game_info['MinPlayers'] = item.attrib["value"]
             case "maxplayers":
