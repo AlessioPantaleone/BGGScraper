@@ -27,6 +27,10 @@ def boardgame_parse(game):
                 game_info['MinPlayers'] = item.attrib["value"]
             case "maxplayers":
                 game_info['MaxPlayers'] = item.attrib["value"]
+            case "playingtime":
+                game_info['PlayingTime'] = item.attrib["value"]
+            case "minage":
+                game_info['MinAge'] = item.attrib["value"]
             case "link":
                 if item.attrib["type"] == "boardgamemechanic":
                     game_info['Mechanics'].append(item.attrib["value"])

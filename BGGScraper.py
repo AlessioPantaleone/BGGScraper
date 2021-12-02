@@ -52,8 +52,8 @@ time.sleep(0.5)
 #    print("")
 
 Logger.info(f"Finished Downloading and parsing {len(gamesData)} games")
-Logger.critical(f"Skipped {len(skippedIDs)} identifiers")
 if len(skippedIDs) != 0:
+    Logger.critical(f"Skipped {len(skippedIDs)} identifiers")
     for item in skippedIDs:
         Logger.critical(f"Skipped the game with id: {item}")
 
