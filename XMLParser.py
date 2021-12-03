@@ -1,7 +1,6 @@
 import logging
 
 from lxml import etree
-import pprint
 
 
 def boardgame_parse(game):
@@ -45,6 +44,58 @@ def boardgame_parse(game):
                     game_info['Artists'].append(item.attrib["value"])
                 if item.attrib["type"] == "boardgamepublisher":
                     game_info['Publishers'].append(item.attrib["value"])
+
+    return game_info
+
+
+def boardgame_parse2(game):
+
+    tree_root = etree.XML(game)
+
+    game_info = {"Name": "N/A",
+                 "id": "N/A",
+                 "Image_Link": "N/A",
+                 "PublicationYear": "N/A",
+                 "BGG_Score": "N/A",
+                 "Category": "N/A",
+                 "MinPlayers": "N/A",
+                 "MaxPlayers": "N/A",
+                 "PlayingTime": "N/A",
+                 "MinAge": "N/A",
+                 "Mechanics": [],
+                 "Designers": [],
+                 "Artists": [],
+                 "Publishers": []}
+
+    for item in tree_root.find("item"):
+        if item.attrib["type"] == "boardgame" or item.attrib["type"] == "boardgameexpansion":
+            game_info['id'] = item.attrib["value"]
+        if item.attrib["type"] == "boardgameexpansion":
+            game_info['Name'] = "- Expansion"
+        if item.attrib["type"] == "":
+            game_info[''] = ""
+        if item.attrib["type"] == "":
+            game_info[''] = ""
+        if item.attrib["type"] == "":
+            game_info[''] = ""
+        if item.attrib["type"] == "":
+            game_info[''] = ""
+        if item.attrib["type"] == "":
+            game_info[''] = ""
+        if item.attrib["type"] == "":
+            game_info[''] = ""
+        if item.attrib["type"] == "":
+            game_info[''] = ""
+        if item.attrib["type"] == "":
+            game_info[''] = ""
+        if item.attrib["type"] == "":
+            game_info[''] = ""
+        if item.attrib["type"] == "":
+            game_info[''] = ""
+        if item.attrib["type"] == "":
+            game_info[''] = ""
+        if item.attrib["type"] == "":
+            game_info[''] = ""
 
     return game_info
 

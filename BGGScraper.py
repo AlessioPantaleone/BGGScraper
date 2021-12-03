@@ -17,7 +17,7 @@ Logger = LoggerHelper.get_complete_logger("ScraperLog")
 Logger.info("Logging started")
 
 idToQuery = FileHelper.get_input_from_file("Input.txt")
-#idToQuery = [92539]
+idToQuery = [45]
 gamesData = []
 skippedIDs = []
 
@@ -30,7 +30,7 @@ for identifier in idToQuery:
         if r.status_code == 200:
             Logger.info(f"HTTP Get Request Successful")
             try:
-                parsedDictionary = XMLParser.boardgame_parse(r.content)
+                parsedDictionary = XMLParser.boardgame_parse2(r.content)
                 gamesData.append(parsedDictionary)
                 Logger.info(f"Game {identifier} parsed successfully")
                 break
@@ -47,12 +47,6 @@ for identifier in idToQuery:
             continue
 
 time.sleep(0.5)
-
-# TO PRETTY PRINT THE DATA RECIEVED UNCOMMENT THIS LINES
-#for game in gamesData:
-#    for key, value in game.items():
-#        print(key, ' : ', value)
-#    print("")
 
 Logger.info(f"Finished Downloading and parsing {len(gamesData)} games")
 if len(skippedIDs) != 0:
