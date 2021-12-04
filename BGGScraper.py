@@ -1,3 +1,6 @@
+import sys
+import traceback
+
 import requests
 import time
 
@@ -17,7 +20,8 @@ Logger = LoggerHelper.get_complete_logger("ScraperLog")
 Logger.info("Logging started")
 
 idToQuery = FileHelper.get_input_from_file("Input.txt")
-idToQuery = [45]
+#idToQuery = [45,199025]   #TO TEST ONLY
+
 gamesData = []
 skippedIDs = []
 
@@ -31,14 +35,17 @@ for identifier in idToQuery:
             Logger.info(f"HTTP Get Request Successful")
             try:
                 parsedDictionary = XMLParser.boardgame_parse2(r.content)
+                if parsedDictionary["Name"] == "N/A":
+                    raise Exception
                 gamesData.append(parsedDictionary)
                 Logger.info(f"Game {identifier} parsed successfully")
                 break
             except Exception as e:
-                Logger.critical(f"Critical Failure for parsing game {identifier}, trying again as an expansion")
-                boardgameurl = 'http://www.boardgamegeek.com/xmlapi2/thing?type=boardgameexpansion&stats=1&id=' + str(identifier)
+                Logger.debug(f"Critical Failure for parsing game {identifier}, trying again as an expansion")
+                boardgameurl = 'http://www.boardgamegeek.com/xmlapi2/thing?type=boardgameexpansion&stats=1&id='\
+                               + str(identifier)
                 if i == 4:
-                    print(e.with_traceback())
+                    Logger.error(traceback.format_exc())
                     skippedIDs.append(identifier)
         else:
             Logger.error(f"Failed to retrieve game with id: {identifier}")
@@ -54,7 +61,7 @@ if len(skippedIDs) != 0:
     for item in skippedIDs:
         Logger.critical(f"Skipped the game with id: {item}")
 
-FileHelper.export_data_to_excel(gamesData, "Onion.xlsx")
+FileHelper.export_data_to_excel(gamesData, "NuoviGiochiPLD.xlsx")
 
 
 
